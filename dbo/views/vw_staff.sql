@@ -12,7 +12,7 @@ CREATE VIEW VW_STAFF
 	    c.name AS club_name
 	FROM users AS u
 	    INNER JOIN clubs AS c on c.id = u.club_id
-	WHERE user_role_id =
-2; 
-
-2;
+	WHERE
+	    u.user_role_id = 2
+	    AND u.date_deleted IS
+NULL; 
