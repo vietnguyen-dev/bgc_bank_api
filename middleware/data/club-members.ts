@@ -17,15 +17,16 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
 })
 
 const examplePostClubMember = {
-    userId: 3,
-    clubId: 1
+    "userId": 3,
+    "grade": '5'
 }
 
 //since club member data is derived from user data, no need to prevent existing user because already exists
 clubMemberRouter.post('/', async (req: Request, res: Response) => {
     try {
+        console.log(req.body)
         const newClubMember = Object.values(req.body)
-        const { rows } = await db.query('INSERT INTO club_members (user_id, club_id) VALUES ($1, $2);', newClubMember)
+        const { rows } = await db.query('INSERT INTO club_members (user_id, grade) VALUES ($1, $2) RETURNING *;', newClubMember)
         res.status(200).send(rows)
     }
     catch(err) {

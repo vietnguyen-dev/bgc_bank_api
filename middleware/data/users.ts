@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 
 import db from '../utils/pg';
 
-dotenv.config()
+dotenv.config();
 
 const userRouter = express.Router();
 
@@ -18,8 +18,6 @@ const hashPassword = async (password: string) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     return hashedPassword;
 }
-
-
 
 const exampleForPostUser = {
     "firstName": "Tadeo",

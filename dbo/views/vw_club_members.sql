@@ -10,7 +10,7 @@ CREATE VIEW VW_CLUB_MEMBERS
 	    u.club_id,
 	    c.name as club_name
 	FROM users AS u
-	    INNER JOIN club_members as cm ON u.user_role_id = cm.id
+	    INNER JOIN club_members as cm ON cm.user_id = u.id
 	    INNER JOIN clubs as c ON c.id = u.club_id
 	WHERE u.user_role_id =
 1; 
