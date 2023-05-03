@@ -35,4 +35,30 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
     }
 })
 
+clubMemberRouter.put('/', async (req: Request, res: Response) => {
+    try {
+        console.log(req.body)
+        const newClubMember = Object.values(req.body)
+        const { rows } = await db.query('INSERT INTO club_members (user_id, grade) VALUES ($1, $2) RETURNING *;', newClubMember)
+        res.status(200).send(rows)
+    }
+    catch(err) {
+        console.log(err, 'in get club members')
+        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+    }
+})
+
+clubMemberRouter.delete('/', async (req: Request, res: Response) => {
+    try {
+        console.log(req.body)
+        const newClubMember = Object.values(req.body)
+        const { rows } = await db.query('INSERT INTO club_members (user_id, grade) VALUES ($1, $2) RETURNING *;', newClubMember)
+        res.status(200).send(rows)
+    }
+    catch(err) {
+        console.log(err, 'in get club members')
+        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+    }
+})
+
 export default clubMemberRouter
