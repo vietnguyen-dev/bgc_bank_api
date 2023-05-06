@@ -21,6 +21,7 @@ export const verifyKey = async (req: Request, res:Response, next: NextFunction) 
         const key = req.header('x-api-key')
         const comparison = await bcrypt.compare(key!, rows[0].key)
         if (comparison) {
+            console.log('has correct key')
             next()
         }
         else {
@@ -29,5 +30,23 @@ export const verifyKey = async (req: Request, res:Response, next: NextFunction) 
     }
     catch(err) {
         res.status(500).send('Error trying to verify API Key')
+    }
+}
+
+export const verifyAdminKey = async (req: Request, res:Response, next: NextFunction) => { 
+    try {
+        const { rows } = await db.query('SELECT * FROM api_keys WHERE clearance = $1', [process.env.ADMIN_REQUEST_FIELD])
+        const key = req.header('x-api-key-admin')
+        const comparison = await bcrypt.compare(key!, rows[0].key)
+        if (comparison) {
+            console.log('has correct admin key')
+            next()
+        }
+        else {
+            res.status(401).send('Invalid Key')
+        }
+    }
+    catch(err) {
+        res.status(500).send('Error trying to verify Admin API Key')
     }
 }

@@ -1,18 +1,19 @@
-DROP VIEW vw_staff IF EXISTS;
-
-CREATE VIEW VW_STAFF 
-	AS
+CREATE OR REPLACE VIEW "PUBLIC" 
+	.vw_staff AS
 	SELECT
 	    u.id,
-	    CONCAT(u.first_name, ' ', u.last_name) AS name,
+	    concat(u.first_name, ' ', u.last_name) AS name,
 	    u.username,
-	    u.email,
+	    u.club_email_id,
+	    ce.email,
 	    u.password,
 	    u.club_id,
 	    c.name AS club_name
-	FROM users AS u
-	    INNER JOIN clubs AS c on c.id = u.club_id
+	FROM users u
+	    JOIN clubs c ON c.id = u.club_id
+	    JOIN club_emails ce ON c.id = u.club_email_id
 	WHERE
 	    u.user_role_id = 2
-	    AND u.date_deleted IS
-NULL; 
+	    AND u.date_deleted IS NULL
+	ORDER BY u.i
+ID; 

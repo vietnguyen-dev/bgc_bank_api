@@ -1,16 +1,15 @@
-DROP VIEW IF EXISTS vw_club_members;
-
-CREATE VIEW VW_CLUB_MEMBERS 
-	AS
+CREATE OR REPLACE VIEW "PUBLIC" 
+	.vw_club_members AS
 	SELECT
 	    cm.id,
-	    CONCAT(u.first_name, ' ', u.last_name) AS name,
+	    concat(u.first_name, ' ', u.last_name) AS name,
 	    cm.amount,
 	    cm.grade,
 	    u.club_id,
-	    c.name as club_name
-	FROM users AS u
-	    INNER JOIN club_members as cm ON cm.user_id = u.id
-	    INNER JOIN clubs as c ON c.id = u.club_id
-	WHERE u.user_role_id =
-1; 
+	    c.name AS club_name
+	FROM users u
+	    JOIN club_members cm ON cm.user_id = u.id
+	    JOIN clubs c ON c.id = u.club_id
+	WHERE u.user_role_id = 1
+	ORDER BY id
+ASC; 

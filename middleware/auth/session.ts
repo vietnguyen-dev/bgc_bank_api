@@ -8,8 +8,7 @@ dotenv.config()
 
 const redisStore = new RedisStore({
     client: redisClient,
-    prefix: "myapp:",
-  });
+});
 
 const environment = process.env.NODE_ENV === process.env.PROD_ENV
 
