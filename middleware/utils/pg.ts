@@ -4,4 +4,6 @@ import pg from 'pg'
 //   variable injected by Railway
 const db = new pg.Pool();
 
+pg.defaults.parseInt8 = true
+
 export default db

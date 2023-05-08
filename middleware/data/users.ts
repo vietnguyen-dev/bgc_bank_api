@@ -2,7 +2,6 @@ import express from 'express';
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv';
-import crypto from "crypto";
 
 import db from '../utils/pg';
 import { sendConfirmEmail } from '../utils/email';
@@ -35,25 +34,43 @@ const hashValue = async (password: string) => {
 }
 
 
-const preventExistingUser = async () => {
-
+const preventExistingUser = async (username: string) => {
+    try {
+        const query = `SELECT * FROM users WHERE username = $1;`
+        const { rows } = await db.query<iUser[]>(query, [username])
+        if (rows.length > 0) {
+            return true
+        }
+        else {
+            return false
+        }
+    }
+    catch(err) {
+        return err
+    }
 }
 
 userRouter.post('/', async (req: Request,res: Response) => {
     try {
-        const hashedPassword = await hashValue(req.body.password)
-        const newUserData = req.body
-        newUserData['password'] = hashedPassword
-        const userDataWithNewPassword = Object.values(newUserData)
-        console.log(userDataWithNewPassword)
-        const query = 'INSERT INTO users (first_name, last_name, username, password, club_email_id, user_role_id, club_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;'
-        const { rows } = await db.query(query, userDataWithNewPassword )
-        if (rows.length > 0) {
-            console.log(rows[0])
-            res.status(200).send('Successfully created user!')
+        const doesUserExist= await preventExistingUser(req.body.username)
+        if (doesUserExist) {
+            res.status(409).send('User with this username already exists')
         }
         else {
-            res.status(500).send('Error when trying to create user')
+            const hashedPassword: string = await hashValue(req.body.password)
+            const newUserData = req.body
+            newUserData['password'] = hashedPassword
+            const userDataWithNewPassword = Object.values(newUserData)
+            console.log(userDataWithNewPassword)
+            const query = 'INSERT INTO users (first_name, last_name, username, password, club_email_id, user_role_id, club_id) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING *;'
+            const { rows } = await db.query<iUser[]>(query, userDataWithNewPassword )
+            if (rows.length > 0) {
+                console.log(rows[0])
+                res.status(200).send('Successfully created user!')
+            }
+            else {
+                res.status(500).send('Error when trying to create user')
+            }
         }
     }
     catch(err) {

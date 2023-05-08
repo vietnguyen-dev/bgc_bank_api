@@ -1,10 +1,10 @@
-CREATE OR REPLACE VIEW "PUBLIC" 
-	.vw_statistics AS
+CREATE VIEW VW_STATISTICS 
+	AS
 	SELECT
 	    c.id,
 	    c.name,
-	    round(avg(cm.amount), 0) AS average,
-	    round(sum(cm.amount) :: numeric, 0) AS total
+	    ROUND(AVG(cm.amount), 0) :: numeric AS average,
+	    ROUND(SUM(cm.amount), 0) :: numeric AS total
 	FROM clubs c
 	    JOIN vw_club_members cm ON cm.club_id = c.id
 	GROUP BY c.i

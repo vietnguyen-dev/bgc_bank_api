@@ -1,5 +1,5 @@
-CREATE OR REPLACE VIEW "PUBLIC" 
-	.vw_staff AS
+CREATE VIEW.VW_STAFF 
+	AS
 	SELECT
 	    u.id,
 	    concat(u.first_name, ' ', u.last_name) AS name,

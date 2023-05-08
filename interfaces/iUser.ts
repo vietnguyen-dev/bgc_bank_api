@@ -4,7 +4,7 @@ export interface iUser {
     last_name: string;
     username: string;
     club_email: string;
-    password: string;
+    password?: string;
     user_role_id: number;
     club_id: number;
     club_email_id: number;

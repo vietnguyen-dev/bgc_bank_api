@@ -7,8 +7,22 @@ const clubMemberRouter = express.Router()
 
 clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
     try {
-        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1', [req.params.club_id])
+        const pageSize = 10
+        const page = parseInt(req.query.page as string) || 1 
+        const offset = (page - 1) * pageSize;
+        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3;', [req.params.club_id, pageSize, offset])
         res.status(200).send(rows)
+    }
+    catch(err) {
+        console.log(err, 'in get club members')
+        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+    }
+})
+
+clubMemberRouter.get('/:club_id/:club_member_id', async (req: Request, res: Response) => {
+    try {
+        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 AND id = $2;', [req.params.club_id, req.params.club_member_id])
+        res.status(200).send(rows[0])
     }
     catch(err) {
         console.log(err, 'in get club members')
@@ -35,10 +49,13 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
     }
 })
 
-clubMemberRouter.put('/', async (req: Request, res: Response) => {
+// only thing we should be updating is the amount
+clubMemberRouter.put('/:club_member_id', async (req: Request, res: Response) => {
     try {
-        const newClubMember = Object.values(req.body)
-        const { rows } = await db.query('INSERT INTO club_members (user_id, grade) VALUES ($1, $2) RETURNING *;', newClubMember)
+        const amount = req.query.amount
+        const memberId = req.params.club_member_id
+        const query = `UPDATE club_members SET amount = amount + $1 WHERE id = $2 RETURNING *;`
+        const { rows } = await db.query(query, [amount, memberId])
         res.status(200).send(rows)
     }
     catch(err) {
@@ -47,11 +64,9 @@ clubMemberRouter.put('/', async (req: Request, res: Response) => {
     }
 })
 
-clubMemberRouter.delete('/', async (req: Request, res: Response) => {
+clubMemberRouter.delete('/:club_member_id', async (req: Request, res: Response) => {
     try {
-        console.log(req.body)
-        const newClubMember = Object.values(req.body)
-        const { rows } = await db.query('INSERT INTO club_members (user_id, grade) VALUES ($1, $2) RETURNING *;', newClubMember)
+        const { rows } = await db.query('UPDATE club_members SET date_deleted = NOW() WHERE id = $1 RETURNING *;', [req.params.club_member_id])
         res.status(200).send(rows)
     }
     catch(err) {
