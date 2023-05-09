@@ -15,8 +15,6 @@ import userRouter from "../middleware/data/users";
 import reasonsRouter from '../middleware/data/reasons';
 import { getStatistics } from '../middleware/data/statistics'
 
-
-
 // import { createAdminKey, createKey } from '../scripts/create-key';
 
 const app = express();
@@ -34,8 +32,8 @@ app.use(hasApiKey, verifyKey, checkSession)
 //login
 app.post('/login', alreadyLoggedIn, userExists, userLogin)
 
-app.post('/logout', userLogout)
 //logout
+app.post('/logout', userLogout)
 
 //add caching to club members and reasons
 app.use('/club-members',  clubMemberRouter)

@@ -11,7 +11,6 @@ const redisStore = new RedisStore({
 });
 
 const environment = process.env.NODE_ENV === process.env.PROD_ENV
-console.log(environment)
 
 const sessionOptions: SessionOptions = {
     name: process.env.SESSION_NAME,

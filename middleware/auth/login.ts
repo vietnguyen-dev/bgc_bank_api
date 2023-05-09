@@ -8,7 +8,6 @@ import redisClient from "../utils/redis";
 
 import { iUser } from "../../interfaces/iUser";
 
-
 dotenv.config();
 
 export interface CustomRequest extends Request {
@@ -38,7 +37,7 @@ export const alreadyLoggedIn: RequestHandler = async (req: CustomRequest, res:Re
       }
     }
     else {
-      res.status(400).send('youre probably trying to session hijack')
+      next()
     }
   }
   else {
