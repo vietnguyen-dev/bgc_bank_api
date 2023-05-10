@@ -6,11 +6,9 @@ import dotenv from 'dotenv';
 import db from '../utils/pg';
 import { sendConfirmEmail } from '../utils/email';
 
-import { iClubEmail } from '../../interfaces/iClubEmail';
 import { iUser } from '../../interfaces/iUser';
 
 dotenv.config();
-
 const userRouter = express.Router();
 
 userRouter.get('/', async (req: Request,res: Response) => {
@@ -36,7 +34,7 @@ const hashValue = async (password: string) => {
 
 const preventExistingUser = async (username: string) => {
     try {
-        const query = `SELECT * FROM users WHERE username = $1;`
+        const query = `SELECT * FROM users WHERE username = $1 LIMIT 1;`
         const { rows } = await db.query<iUser[]>(query, [username])
         if (rows.length > 0) {
             return true
@@ -79,11 +77,63 @@ userRouter.post('/', async (req: Request,res: Response) => {
     }
 })
 
-
-//for updating password
-userRouter.put('/', async (req: Request,res: Response) => { 
+userRouter.put('/send-confirmation/:id', async (req: Request,res: Response) => { 
     try {
+        //create code and expire date
+        const code = Math.floor(Math.random() * 900000) + 100000;
+        const date = new Date();
+        // Add 10 minutes to the date object
+        date.setMinutes(date.getMinutes() + 10);
+        // Convert the date to a string in PostgreSQL timestamp with time zone format
+        const postgresTimestampWithTimeZone = date.toISOString().replace('T', ' ').replace('Z', ' UTC');
+        //update in database
+        const query = 'UPDATE users SET pw_reset_code = $1, pw_reset_expire = $2 WHERE id = $3 RETURNING *'
+        const { rows } = await db.query(query, [code, postgresTimestampWithTimeZone, req.params.id])
+        console.log(rows[0])
+        if (rows.length > 0) {
+            // send confirmation email
+            await sendConfirmEmail(code, rows[0].first_name, req.query.email as string)
+            res.status(200).send("Email Confirmation sent")
+        }
+    }
+    catch(err) {
+        console.log(err)
+        res.status(400).send("error trying to send confirmation code")
+    }
+})
 
+userRouter.put('/confirm-code/:id/:code', async (req: Request,res: Response) => { 
+    try {
+        const codeSent = req.params.code
+        const userId = req.params.id
+        const query = 'SELECT pw_reset_code, pw_reset_expire FROM users WHERE id = $1 LIMIT 1'
+        const date = new Date();
+        const { rows } = await db.query(query, [userId])
+        if (rows.length > 0) {
+            const codeCompare = rows[0].pw_reset_code === codeSent.toString()
+            const dateCompare = date < rows[0].pw_reset_expire
+            if (codeCompare && dateCompare) {
+                res.status(200).send(true)
+            }
+            else {
+                res.status(401).send(false)
+            }
+        }
+        else {
+            res.status(403).send('invalid confirmation code')
+            console.log('error happening')
+        }
+    }
+    catch(err) {
+        console.log(err)
+        res.status(400).send("error trying to send confirmation code")
+    }
+})  
+
+//for actually updating password
+userRouter.put('/:id', async (req: Request,res: Response) => { 
+    try {
+       //db. update password with new one and encrypt it
     }
     catch (err) {
 

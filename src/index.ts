@@ -1,4 +1,3 @@
-import http from 'http'
 import express from "express";
 //authorization into backend
 import { hasApiKey, verifyKey, verifyAdminKey } from "../middleware/auth/api-keys";
@@ -14,6 +13,7 @@ import clubMemberRouter from "../middleware/data/club-members";
 import userRouter from "../middleware/data/users";
 import reasonsRouter from '../middleware/data/reasons';
 import { getStatistics } from '../middleware/data/statistics'
+import { isValidEmail } from '../middleware/data/club-emails';
 
 // import { createAdminKey, createKey } from '../scripts/create-key';
 
@@ -40,8 +40,10 @@ app.use('/club-members',  clubMemberRouter)
 app.use('/users', userRouter)
 app.use('/reasons', reasonsRouter)
 
-
+//saving in vidfasdfasdfadf
 app.get('/statistics/:club_id', getStatistics)
+
+app.get('/club-email/:email', isValidEmail)
 
 //new school year admin only
 

@@ -1,10 +1,9 @@
 import nodemailer from "nodemailer";
-import { Request, Response } from 'express';
-
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
-export const sendConfirmEmail = async (code: string, email: string) => { 
+export const sendConfirmEmail = async (code: number, name: string, email: string) => { 
     try {
         const transportOptions = { 
             service: process.env.EMAIL_SERVICE,
@@ -14,14 +13,14 @@ export const sendConfirmEmail = async (code: string, email: string) => {
             },
         }
         const transporter = nodemailer.createTransport(transportOptions);
-        
+        console.log(name)
         const mailOptions = {
             from: `"${process.env.EMAIL_NAME}" <${process.env.EMAIL_USER_NAME}>`,
             to: `${email}`,
-            subject: `Confirmation Code`,
-            text: `Hello `,
+            subject: `Club Bucks App Confirmation Code`,
+            text: `Hello ${name}`,
             html: 
-            `<p>Hello</p>
+            `<p>Hello ${name}</p>
             <p>Your confirmation code is ${code}</p>
             <br/>
             <br/>
