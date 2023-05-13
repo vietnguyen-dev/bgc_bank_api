@@ -43,8 +43,6 @@ app.use('/reasons', reasonsRouter)
 //saving in vidfasdfasdfadf
 app.get('/statistics/:club_id', getStatistics)
 
-app.get('/club-email/:email', isValidEmail)
-
 //new school year admin only
 
 //admin use only, should refresh api keys occaionally

@@ -30,6 +30,17 @@ clubMemberRouter.get('/:club_id/:club_member_id', async (req: Request, res: Resp
     }
 })
 
+clubMemberRouter.get('/:club_id/', async (req: Request, res: Response) => {
+    try {
+        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 AND id = $2;', [req.params.club_id, req.params.club_member_id])
+        res.status(200).send(rows[0])
+    }
+    catch(err) {
+        console.log(err, 'in get club members')
+        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+    }
+})
+
 const examplePostClubMember = {
     "userId": 3,
     "grade": '5'

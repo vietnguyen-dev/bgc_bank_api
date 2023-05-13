@@ -95,7 +95,8 @@ export const checkSession: RequestHandler = async (req: CustomRequest, res:Respo
   console.log(req.url)
   const loginPaths = [ '/login', '/logout' ] 
   const resetPasswordPath = req.method === 'PUT' && req.url.includes('/users')
-  const availablePath = loginPaths.includes(req.url) || resetPasswordPath
+  const resetPasswordPath2 = req.method === 'GET' && req.url.includes('/users')
+  const availablePath = loginPaths.includes(req.url) || resetPasswordPath || resetPasswordPath2
   if (availablePath) {
       next()
   }

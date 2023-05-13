@@ -11,8 +11,22 @@ import { iUser } from '../../interfaces/iUser';
 dotenv.config();
 const userRouter = express.Router();
 
+//used as first step of forget password process
 userRouter.get('/', async (req: Request,res: Response) => {
-    res.send('what are you looking at?')
+    try {
+        const { email, username } = req.body
+        const query = 'SELECT * FROM vw_staff WHERE email = $1 AND username = $2 LIMIT 1'
+        const { rows } = await db.query(query, [email, username])
+        if (rows.length > 0) {
+            res.status(200).send(true)
+        }
+        else {
+            res.status(100).send(false)
+        }
+    }
+    catch(err) {
+        res.status(500).send('Error tryring to confirm user')
+    }
 })
 
 const hashValue = async (password: string) => {
@@ -77,7 +91,7 @@ userRouter.post('/', async (req: Request,res: Response) => {
     }
 })
 
-userRouter.put('/send-confirmation/:id', async (req: Request,res: Response) => { 
+userRouter.put('/send-confirmation', async (req: Request,res: Response) => { 
     try {
         //create code and expire date
         const code = Math.floor(Math.random() * 900000) + 100000;
@@ -87,12 +101,12 @@ userRouter.put('/send-confirmation/:id', async (req: Request,res: Response) => {
         // Convert the date to a string in PostgreSQL timestamp with time zone format
         const postgresTimestampWithTimeZone = date.toISOString().replace('T', ' ').replace('Z', ' UTC');
         //update in database
-        const query = 'UPDATE users SET pw_reset_code = $1, pw_reset_expire = $2 WHERE id = $3 RETURNING *'
-        const { rows } = await db.query(query, [code, postgresTimestampWithTimeZone, req.params.id])
+        const query = 'UPDATE users SET pw_reset_code = $1, pw_reset_expire = $2 WHERE username = $3 RETURNING *'
+        const { rows } = await db.query(query, [code, postgresTimestampWithTimeZone, req.body.username])
         console.log(rows[0])
         if (rows.length > 0) {
             // send confirmation email
-            await sendConfirmEmail(code, rows[0].first_name, req.query.email as string)
+            await sendConfirmEmail(code, rows[0].first_name, req.body.email as string)
             res.status(200).send("Email Confirmation sent")
         }
     }
