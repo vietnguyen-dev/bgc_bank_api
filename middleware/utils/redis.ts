@@ -8,6 +8,6 @@ const redisClient: RedisClientType = createClient({
     url: process.env.REDIS_URL,
 });
 
-redisClient.connect().catch(console.error)
+// redisClient.connect().catch(console.error)
 
 export default redisClient

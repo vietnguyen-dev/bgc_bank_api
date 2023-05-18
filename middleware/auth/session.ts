@@ -30,7 +30,7 @@ const sessionOptions: SessionOptions = {
 
 const appSession = session(sessionOptions)
 
-redisClient.on('connect', () => console.log('Redis Client: Connected!'));
-redisClient.on('error', err => console.log('Redis Client: Error', err));
+// redisClient.on('connect', () => console.log('Redis Client: Connected!'));
+// redisClient.on('error', err => console.log('Redis Client: Error', err));
 
 export default appSession

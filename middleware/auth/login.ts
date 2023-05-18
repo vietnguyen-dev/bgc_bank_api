@@ -92,7 +92,6 @@ export const userLogout: RequestHandler = async (req: CustomRequest, res:Respons
 
 //middleware for all requests to check if the user has a session id
 export const checkSession: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => {
-  console.log(req.url)
   const loginPaths = [ '/login', '/logout' ] 
   const resetPasswordPath = req.method === 'PUT' && req.url.includes('/users')
   const resetPasswordPath2 = req.method === 'GET' && req.url.includes('/users')

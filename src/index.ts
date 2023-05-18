@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Express } from "express";
 //authorization into backend
 import { hasApiKey, verifyKey, verifyAdminKey } from "../middleware/auth/api-keys";
 
@@ -13,7 +13,6 @@ import clubMemberRouter from "../middleware/data/club-members";
 import userRouter from "../middleware/data/users";
 import reasonsRouter from '../middleware/data/reasons';
 import { getStatistics } from '../middleware/data/statistics'
-import { isValidEmail } from '../middleware/data/club-emails';
 
 // import { createAdminKey, createKey } from '../scripts/create-key';
 
@@ -53,6 +52,8 @@ app.get('/statistics/:club_id', getStatistics)
 // })
 
 
-app.listen(port, () => {
-  console.log(`BGC Bank API listening at http://localhost:${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`BGC Bank API listening at http://localhost:${port}`);
+// });
+
+export default app
