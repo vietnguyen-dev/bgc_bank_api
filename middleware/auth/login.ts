@@ -87,7 +87,7 @@ export const userLogout: RequestHandler = async (req: CustomRequest, res:Respons
   req.session.destroy(() => {
       console.log('session destroyed')
   })
-  res.end()
+  res.status(200).send('logout successful')
 }
 
 //middleware for all requests to check if the user has a session id
