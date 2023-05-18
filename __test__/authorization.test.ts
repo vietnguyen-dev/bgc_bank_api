@@ -1,7 +1,7 @@
 import request from 'supertest';
 import app from '../src';
 
-describe('Create New Club Member | POST /', () => {
+describe('Has Api Key | POST /', () => {
   it('responds with user object and session id"', async () => {
     const requestBody = {
       name: 'John Doe',
@@ -13,7 +13,7 @@ describe('Create New Club Member | POST /', () => {
   });
 });
 
-describe('Delete Club Member | GET /', () => {
+describe('In Session | GET /', () => {
   it('responds with user object and session id"', async () => {
     const requestBody = {
       name: 'John Doe',

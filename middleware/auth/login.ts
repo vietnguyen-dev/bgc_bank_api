@@ -27,6 +27,23 @@ declare module 'express-session' {
   }
 }
 
+export const checkFields: RequestHandler = (req: CustomRequest, res:Response, next: NextFunction) => { 
+  try { 
+    const usernameExists = req.body.hasOwnProperty('username')
+    const passwordExists = req.body.hasOwnProperty('password')
+    if (usernameExists && passwordExists) {
+      next()
+    }
+    else {
+      res.status(409).send('needs to have both username and password fields')
+    }
+  }
+  catch(err) {
+    console.error(err)
+    res.status(500).send('server not able to process request because of missing fields')
+  }
+}
+
 export const alreadyLoggedIn: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => { 
   if (req.sessionID || req.session.sid) {
     const data = await redisClient.get(`sess:${req.sessionID}`)
@@ -62,12 +79,18 @@ export const userExists: RequestHandler = async (req: CustomRequest, res:Respons
 
 // 2. check if they have the correct password
 export const correctPasswordForUser: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => {
-  const match = await bcrypt.compare(req.body.password as string, req?.requestingUser?.password as string)
-  if (match) {
-      next()
-  } 
-  else {
-      res.status(400).send('Incorrect Password')
+  try {
+    const match = await bcrypt.compare(req.body.password as string, req?.requestingUser?.password as string)
+    if (match) {
+        next()
+    } 
+    else {
+        res.status(400).send('Incorrect Password')
+    }
+  }
+  catch(err) {
+    console.error(err)
+    res.status(500).send('missing field')
   }
 }
 

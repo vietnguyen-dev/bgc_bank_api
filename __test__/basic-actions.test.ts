@@ -8,7 +8,6 @@ describe('Get Club Members for user | GET /', () => {
       age: 30,
     };
     const response = await request(app).get('/club-members');
-    console.log(response)
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Hello, World!' });
   });
@@ -21,7 +20,6 @@ describe('Get Single Club Member | GET /', () => {
       age: 30,
     };
     const response = await request(app).get('/club-members');
-    console.log(response)
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Hello, World!' });
   });
@@ -34,7 +32,6 @@ describe('Get Reasons for Club Member | GET /', () => {
       age: 30,
     };
     const response = await request(app).get('/club-members');
-    console.log(response)
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Hello, World!' });
   });
@@ -47,7 +44,6 @@ describe('Add Amount and Reason | POST /', () => {
       age: 30,
     };
     const response = await request(app).get('/club-members');
-    console.log(response)
     expect(response.status).toBe(200);
     expect(response.body).toEqual({ message: 'Hello, World!' });
   });

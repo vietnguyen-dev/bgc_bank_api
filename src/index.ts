@@ -6,7 +6,7 @@ import { hasApiKey, verifyKey, verifyAdminKey } from "../middleware/auth/api-key
 import appSession from '../middleware/auth/session'
 
 //user authentication
-import { userLogin, userExists, userLogout, checkSession, alreadyLoggedIn } from '../middleware/auth/login';
+import { checkFields, userLogin, userExists, correctPasswordForUser, userLogout, checkSession, alreadyLoggedIn } from '../middleware/auth/login';
 
 //data associcated with users
 import clubMemberRouter from "../middleware/data/club-members";
@@ -17,7 +17,6 @@ import { getStatistics } from '../middleware/data/statistics'
 // import { createAdminKey, createKey } from '../scripts/create-key';
 
 const app = express();
-const port = process.env.PORT || 3333;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -29,7 +28,7 @@ app.use(appSession);
 app.use(hasApiKey, verifyKey, checkSession)
 
 //login
-app.post('/login', alreadyLoggedIn, userExists, userLogin)
+app.post('/login', checkFields, alreadyLoggedIn, userExists, correctPasswordForUser, userLogin)
 
 //logout
 app.post('/logout', userLogout)
