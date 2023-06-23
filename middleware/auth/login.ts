@@ -40,40 +40,50 @@ export const checkFields: RequestHandler = (req: CustomRequest, res:Response, ne
   }
   catch(err) {
     console.error(err)
-    res.status(500).send('server not able to process request because of missing fields')
+    res.status(501).send('server not able to process request because of missing fields')
   }
 }
 
 export const alreadyLoggedIn: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => { 
-  if (req.sessionID || req.session.sid) {
-    const data = await redisClient.get(`sess:${req.sessionID}`)
-    if (data) {
-      const parsed = JSON.parse(data)
-      if (parsed.sid = req.session.sid) {
-        res.status(400).send('already logged in on another device')
+  try {
+    if (req.sessionID || req.session.sid) {
+      const data = await redisClient.get(`sess:${req.sessionID}`)
+      if (data) {
+        const parsed = JSON.parse(data)
+        if (parsed.sid = req.session.sid) {
+          res.status(400).send('already logged in on another device')
+        }
+      }
+      else {
+        next()
       }
     }
     else {
       next()
     }
   }
-  else {
-    next()
+  catch(err){
+    res.status(502).send('Errir seeing if you are logged in')
   }
 }
 
 //1. check if they acutally exists
 export const userExists: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => {
-  const { username } = req.body
-  const query = `SELECT id, name, username, club_email_id, club_id FROM vw_staff WHERE username = $1 ORDER BY id ASC LIMIT 1;`
-  const { rows } = await db.query(query, [username]) 
-  if (rows.length > 0 && rows.length === 1) {
-      //this will pass down the results to the correctPasswordForUser middleware
-      req.requestingUser =  rows[0]
-      next()
+  try {
+    const { username } = req.body
+    const query = `SELECT id, name, username, club_email_id, club_id FROM vw_staff WHERE username = $1 ORDER BY id ASC LIMIT 1;`
+    const { rows } = await db.query(query, [username]) 
+    if (rows.length > 0 && rows.length === 1) {
+        //this will pass down the results to the correctPasswordForUser middleware
+        req.requestingUser =  rows[0]
+        next()
+    }
+    else {
+        res.status(400).send('User Does not exists')
+    }
   }
-  else {
-      res.status(400).send('User Does not exists')
+  catch(err){
+    res.status(503).send('Errir seeing if you are logged in')
   }
 }
 
@@ -90,19 +100,25 @@ export const correctPasswordForUser: RequestHandler = async (req: CustomRequest,
   }
   catch(err) {
     console.error(err)
-    res.status(500).send('missing field')
+    res.status(504).send('missing field')
   }
 }
 
 //3. log the user in
 export const userLogin: RequestHandler = async (req: CustomRequest, res:Response, next: NextFunction) => {
-  const sid = uuid()
-  //creates record in redis with session id with session store
-  req.session.sid = sid
-  req.session.uid = req.requestingUser?.id
-  const user = req.requestingUser
-  delete user?.password
-  res.status(200).send(user)
+  try {
+    const sid = uuid()
+    //creates record in redis with session id with session store
+    req.session.sid = sid
+    req.session.uid = req.requestingUser?.id
+    const user = req.requestingUser
+    delete user?.password
+    res.status(200).send(user)
+  }
+  catch(err) {
+    console.error(err)
+    res.status(505).send('missing field')
+  }
 }
 
 

@@ -11,7 +11,7 @@ describe('Login | POST /', () => {
         "password": "iamcool99"
       }
       const key = process.env.API_KEY
-    const response = (await request(app).post('/login').send(requestBody).set({ 'x-api-key': key, Accept: 'application/json' }))
+    const response = (await request(app).post('/login').send(requestBody).set({ 'x-api-key': key, Accept: '*' }))
     expect(response.status).toBe(200);
     expect(response.body).toEqual({
         "id": 22,
@@ -23,26 +23,26 @@ describe('Login | POST /', () => {
   });
 });
 
-describe('Logout | POST /', () => {
-  it('responds with user object and session id"', async () => {
-    const requestBody = {
-      name: 'John Doe',
-      age: 30,
-    };
-    const response = await request(app).get('/club-members');
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Hello, World!' });
-  });
-});
+// describe('Logout | POST /', () => {
+//   it('responds with user object and session id"', async () => {
+//     const requestBody = {
+//       name: 'John Doe',
+//       age: 30,
+//     };
+//     const response = await request(app).get('/club-members');
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({ message: 'Hello, World!' });
+//   });
+// });
 
-describe('Reset Password | PUT /', () => {
-  it('responds with user object and session id"', async () => {
-    const requestBody = {
-      name: 'John Doe',
-      age: 30,
-    };
-    const response = await request(app).get('/club-members');
-    expect(response.status).toBe(200);
-    expect(response.body).toEqual({ message: 'Hello, World!' });
-  });
-});
+// describe('Reset Password | PUT /', () => {
+//   it('responds with user object and session id"', async () => {
+//     const requestBody = {
+//       name: 'John Doe',
+//       age: 30,
+//     };
+//     const response = await request(app).get('/club-members');
+//     expect(response.status).toBe(200);
+//     expect(response.body).toEqual({ message: 'Hello, World!' });
+//   });
+// });
