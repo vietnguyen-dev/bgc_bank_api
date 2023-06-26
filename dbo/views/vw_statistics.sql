@@ -6,6 +6,6 @@ CREATE VIEW VW_STATISTICS
 	    ROUND(AVG(cm.amount), 0) :: numeric AS average,
 	    ROUND(SUM(cm.amount), 0) :: numeric AS total
 	FROM clubs c
-	    JOIN vw_club_members cm ON cm.club_id = c.id
-	GROUP BY c.i
+	    INNER JOIN club_members cm ON cm.club_id = c.id
+	GROUP BY c.
 ID; 

@@ -5,5 +5,8 @@ CREATE TABLE
         name VARCHAR(128),
         city VARCHAR(32),
         state VARCHAR(2),
-        region VARCHAR(128)
+        region VARCHAR(128),
+        date_created DATE NOT NULL DEFAULT NOW(),
+        date_updated DATE NULL,
+        date_deleted DATE NULL
     );
