@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from 'dotenv';
-//authorization into backend
+import cors from 'cors'
+
 import { hasApiKey, verifyKey } from "../middleware/auth/api-keys";
 
 import clubMemberRouter from "../middleware/data/club-members";
@@ -16,6 +17,12 @@ const port = process.env.PORT || 3000
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+const corsOptions ={
+  origin: process.env.APP_URL, 
+  credentials:true,            //access-control-allow-credentials:true
+  optionSuccessStatus:200
+}
+app.use(cors(corsOptions));
 
 app.use(hasApiKey, verifyKey)
 app.use('/club-members',  clubMemberRouter)
