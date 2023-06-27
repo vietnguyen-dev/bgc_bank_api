@@ -1,29 +1,29 @@
 import express from "express";
+import dotenv from 'dotenv';
 //authorization into backend
-import { hasApiKey, verifyKey, verifyAdminKey } from "../middleware/auth/api-keys";
+import { hasApiKey, verifyKey } from "../middleware/auth/api-keys";
 
 import clubMemberRouter from "../middleware/data/club-members";
 import reasonsRouter from '../middleware/data/reasons';
 import { getStatistics } from '../middleware/data/statistics'
 
+dotenv.config();
+
 
 const app = express();
+
+const port = process.env.PORT || 3000
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-//verifying api keys, rate limiting, size limiting, 
 app.use(hasApiKey, verifyKey)
-//add caching to club members and reasons
 app.use('/club-members',  clubMemberRouter)
-// app.use('/users', userRouter)
 app.use('/reasons', reasonsRouter)
 
 //statistics for clubs
 app.get('/statistics/:club_id', getStatistics)
 
-// app.listen(port, () => {
-//   console.log(`BGC Bank API listening at http://localhost:${port}`);
-// });
-
-export default app
+app.listen(port, () => {
+  console.log(`BGC Bank API listening at http://localhost:${port}`);
+});
