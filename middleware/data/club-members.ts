@@ -17,7 +17,7 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
     }
     catch(err) {
         console.log(err, 'in get club members')
-        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+        res.status(500).send(`Error trying to get club members where club id is ${req.params.club_id}`)
     }
 })
 
