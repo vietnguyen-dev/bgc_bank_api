@@ -1,13 +1,13 @@
-import { createClient,  RedisClientType } from 'redis';
-import * as dotenv from 'dotenv';
+// import { createClient,  RedisClientType } from 'redis';
+// import * as dotenv from 'dotenv';
 
-dotenv.config();
+// dotenv.config();
 
-// client vs pool?
-const redisClient: RedisClientType = createClient({
-    url: process.env.REDIS_URL,
-});
+// // client vs pool?
+// const redisClient: RedisClientType = createClient({
+//     url: process.env.REDIS_URL,
+// });
 
-redisClient.connect()
+// redisClient.connect()
 
-export default redisClient
+// export default redisClient
