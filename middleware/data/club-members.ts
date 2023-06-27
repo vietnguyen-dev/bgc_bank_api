@@ -12,7 +12,8 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         const offset = (page - 1) * pageSize;
         const searchQuery = req.query.search
         const clubId = req.params.club_id
-        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 AND search_vector @@ to_tsquery($2) ORDER BY id ASC LIMIT $3 OFFSET $4;', [clubId, searchQuery, pageSize, offset])
+        const searchVector = 'SELECT * FROM vw_club_members WHERE club_id = $1 AND tsvector_field @@ to_tsquery($2) ORDER BY id ASC'
+        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $3 OFFSET $4;', [clubId, searchQuery, pageSize, offset])
         res.status(200).send(rows)
     }
     catch(err) {
