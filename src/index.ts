@@ -17,12 +17,8 @@ const port = process.env.PORT || 3000
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-const corsOptions ={
-  origin: process.env.APP_URL, 
-  credentials:true,            //access-control-allow-credentials:true
-  optionSuccessStatus:200
-}
-app.use(cors(corsOptions));
+
+app.use(cors());
 
 app.use(hasApiKey, verifyKey)
 app.use('/club-members',  clubMemberRouter)
