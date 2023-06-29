@@ -10,10 +10,8 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         const pageSize = 10
         const page = parseInt(req.query.page as string) || 1 
         const offset = (page - 1) * pageSize;
-        const searchQuery = req.query.search
         const clubId = req.params.club_id
-        // const searchVector = 'SELECT * FROM vw_club_members WHERE club_id = $1 AND tsvector_field @@ to_tsquery($2) ORDER BY id ASC'
-        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3;', [clubId, pageSize, offset])
+        const { rows } = await db.query("SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3;", [clubId, pageSize, offset])
         res.status(200).send(rows)
     }
     catch(err) {
@@ -47,7 +45,7 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
         console.log(req.body)
         const newClubMember = Object.values(req.body)
         console.log(newClubMember)
-        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, preferred_name, grade, amount, club_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;', newClubMember)
+        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, grade, amount, club_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;', newClubMember)
         res.status(200).send(rows)
     }
     catch(err) {
