@@ -7,7 +7,7 @@ const reasonsRouter = express.Router();
 
 reasonsRouter.get('/:club_member_id', async (req: Request,res: Response) => {
     try {
-        const { rows } = await db.query('SELECT * FROM vw_club_members WHERE id = $1', [req.params.club_member_id])
+        const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1', [req.params.club_member_id])
         if (rows.length > 0) {
             res.status(200).send(rows[0])
         }
@@ -23,12 +23,9 @@ reasonsRouter.get('/:club_member_id', async (req: Request,res: Response) => {
 
 reasonsRouter.post('/:club_member_id', async (req: Request,res: Response) => {
     try {
-        const { userId, grade } = req.body
-        const { rows } = await db.query('INSERT INTO club_members (user_id,grade) VALUES ($1, $2);', [userId, grade])
-        console.log(rows)
-        // else {
-        //     res.status(500).send(`Error trying to get club members where is ${req.params.id}`)
-        // }
+        const newReason = Object.values(req.body)
+        const { rows } = await db.query('INSERT INTO reasons (reason, club_member_id, amount_given, new_total) VALUES ($1, $2, $3, $4);', newReason)
+        res.status(200).send(rows[0])
     }
     catch(err) {
         console.error(`Error trying to get reasons for club member id: ${req.params.club_member_id}`)
