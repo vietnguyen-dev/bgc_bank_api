@@ -45,7 +45,7 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
         console.log(req.body)
         const newClubMember = Object.values(req.body)
         console.log(newClubMember)
-        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, grade, amount, club_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;', newClubMember)
+        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, grade, amount, club_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;', newClubMember)
         res.status(200).send(rows)
     }
     catch(err) {
