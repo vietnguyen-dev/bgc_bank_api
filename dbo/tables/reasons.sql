@@ -5,7 +5,7 @@ CREATE TABLE
         club_member_id SERIAL REFERENCES club_members (id),
         amount_given SMALLINT CHECK (
             amount_given >= 0
-            and amount_given <= 100
+            and amount_given <= 20
         ),
         new_total SMALLINT CHECK (
             amount_given >= 0

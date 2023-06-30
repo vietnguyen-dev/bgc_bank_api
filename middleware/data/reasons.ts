@@ -8,12 +8,8 @@ const reasonsRouter = express.Router();
 reasonsRouter.get('/:club_member_id', async (req: Request,res: Response) => {
     try {
         const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1', [req.params.club_member_id])
-        if (rows.length > 0) {
-            res.status(200).send(rows[0])
-        }
-        else {
-            res.status(500).send(`Error trying to get club members where is ${req.params.id}`)
-        }
+        res.status(200).send(rows)
+        
     }
     catch(err) {
         console.error(`Error trying to get reasons for club member id: ${req.params.club_member_id}`)
