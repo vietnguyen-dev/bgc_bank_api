@@ -12,6 +12,7 @@ export const getStatistics: RequestHandler = async (req: Request, res: Response)
         const statistics = rows.map(row => ({
             average: parseInt(row.average),
             total: parseInt(row.total),
+            withNone: parseInt(row.zero_amount_count)
           }));
         res.send(statistics[0])
     }
