@@ -7,7 +7,7 @@ import db from '../utils/pg';
 export const getStatistics: RequestHandler = async (req: Request, res: Response) => {
     try {
         const clubId = req.params.club_id
-        const query = 'SELECT average, total from vw_statistics WHERE id = $1;'
+        const query = 'SELECT average, total, zero_amount_count from vw_statistics WHERE id = $1;'
         const { rows } = await db.query(query, [clubId])
         const statistics = rows.map(row => ({
             average: parseInt(row.average),
