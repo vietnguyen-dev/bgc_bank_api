@@ -6,6 +6,7 @@ import { hasApiKey, verifyKey } from "../middleware/auth/api-keys";
 
 import clubMemberRouter from "../middleware/data/club-members";
 import reasonsRouter from '../middleware/data/reasons';
+import clubsRouter from "../middleware/data/clubs";
 import { getStatistics } from '../middleware/data/statistics'
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.use(cors());
 app.use(hasApiKey, verifyKey)
 app.use('/club-members',  clubMemberRouter)
 app.use('/reasons', reasonsRouter)
+app.use('/', clubsRouter)
 
 //statistics for clubs
 app.get('/statistics/:club_id', getStatistics)
