@@ -1,9 +1,12 @@
-CREATE VIEW VW_STATISTICS AS 
+DROP VIEW vw_statistics;
+
+CREATE VIEW VW_STATISTICS 
+	AS
 	SELECT
 	    c.id,
 	    c.name,
-	    ROUND(AVG(cm.amount), 0):: numeric AS average,
-	    ROUND(SUM(cm.amount), 0):: numeric AS total,
+	    ROUND(AVG(cm.amount), 0) :: numeric AS average,
+	    ROUND(SUM(cm.amount), 0) :: numeric AS total,
 	    COUNT(
 	        CASE
 	            WHEN cm.amount = 0 THEN 1
