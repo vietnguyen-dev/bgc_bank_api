@@ -1,3 +1,5 @@
+-- Active: 1682658392185@@containers-us-west-3.railway.app@7024@railway
+
 DROP TABLE reasons;
 
 CREATE TABLE
@@ -5,10 +7,7 @@ CREATE TABLE
         id SERIAL PRIMARY KEY,
         reason VARCHAR(128),
         club_member_id SERIAL REFERENCES club_members (id),
-        amount_given SMALLINT CHECK (amount_given <= 20),
-        new_total SMALLINT CHECK (
-            amount_given >= 0
-            and amount_given <= 1000
-        ),
+        amount_given SMALLINT,
+        new_total SMALLINT,
         date_created DATE NOT NULL DEFAULT NOW()
     );
