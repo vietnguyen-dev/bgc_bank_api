@@ -7,7 +7,7 @@ const reasonsRouter = express.Router();
 
 reasonsRouter.get('/:club_member_id', async (req: Request,res: Response) => {
     try {
-        const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1 order by date_created DESC', [req.params.club_member_id])
+        const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1', [req.params.club_member_id])
         res.status(200).send(rows)
         
     }
