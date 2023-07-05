@@ -24,7 +24,7 @@ app.use(cors());
 app.use(hasApiKey, verifyKey)
 app.use('/club-members',  clubMemberRouter)
 app.use('/reasons', reasonsRouter)
-app.use('/', clubsRouter)
+app.use('/clubs', clubsRouter)
 
 //statistics for clubs
 app.get('/statistics/:club_id', getStatistics)
