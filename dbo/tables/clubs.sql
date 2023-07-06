@@ -6,7 +6,7 @@ CREATE TABLE
         city VARCHAR(32),
         state VARCHAR(2),
         region VARCHAR(128),
-        date_created DATE NOT NULL DEFAULT NOW(),
-        date_updated DATE NULL,
-        date_deleted DATE NULL
+        date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date_updated TIMESTAMP NULL,
+        date_deleted TIMESTAMP NULL
     );

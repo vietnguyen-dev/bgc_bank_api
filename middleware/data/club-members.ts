@@ -11,6 +11,7 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         const page = parseInt(req.query.page as string) || 1 
         const offset = (page - 1) * pageSize;
         const clubId = req.params.club_id
+        //add sorting and direction for different fields, only sort by one field at a time
         const { rows } = await db.query("SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3;", [clubId, pageSize, offset])
         res.status(200).send(rows)
     }

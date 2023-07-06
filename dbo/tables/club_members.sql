@@ -7,7 +7,7 @@ CREATE TABLE
         grade VARCHAR(2) NOT NULL,
         amount SMALLINT NOT NULL DEFAULT 0,
         club_id SERIAL REFERENCES clubs (id),
-        date_created DATE NOT NULL DEFAULT NOW(),
-        date_updated DATE NULL,
-        date_deleted DATE NULL
+        date_created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        date_updated TIMESTAMP NULL,
+        date_deleted TIMESTAMP NULL
     );

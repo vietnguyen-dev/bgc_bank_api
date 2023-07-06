@@ -9,12 +9,7 @@ CREATE VIEW VW_CLUB_MEMBERS
 	    club_id,
 	    to_tsvector(
 	        'english',
-	        CONCAT_WS(
-	            ' ',
-	            first_name,
-	            last_name,
-	            grade
-	        )
+	        coalesce(first_name, '') || ' ' || coalesce(last_name, '') || ' ' || coalesce(grade, '')
 	    ) AS search_vector
 	FROM club_members
 	WHERE date_deleted IS NULL
