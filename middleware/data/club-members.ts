@@ -46,12 +46,12 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
         console.log(req.body)
         const newClubMember = Object.values(req.body)
         console.log(newClubMember)
-        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, grade, amount, club_id) VALUES ($1, $2, $3, $4, $5) RETURNING *;', newClubMember)
+        const { rows } = await db.query('INSERT INTO club_members (first_name, last_name, grade, club_id) VALUES ($1, $2, $3, $4) RETURNING *;', newClubMember)
         res.status(200).send(rows)
     }
     catch(err) {
         console.log(err, 'in get club members')
-        res.status(500).send(`Error trying to get club members where club id is ${req.params.id}`)
+        res.status(500).send(`Error trying to post club members where club id is ${req.params.id}`)
     }
 })
 
