@@ -10,7 +10,7 @@ reasonsRouter.get('/:club_member_id', async (req: Request,res: Response) => {
         const pageSize = 5
         const page = parseInt(req.query.page as string) || 1 
         const offset = (page - 1) * pageSize;
-        const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3', [req.params.club_member_id, pageSize, offset])
+        const { rows } = await db.query('SELECT * FROM reasons WHERE club_member_id = $1 ORDER BY date_created DESC LIMIT $2 OFFSET $3', [req.params.club_member_id, pageSize, offset])
         res.status(200).send(rows)
         
     }

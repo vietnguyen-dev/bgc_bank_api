@@ -11,8 +11,35 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         const page = parseInt(req.query.page as string) || 1 
         const offset = (page - 1) * pageSize;
         const clubId = req.params.club_id
-        //add sorting and direction for different fields, only sort by one field at a time
-        const { rows } = await db.query("SELECT * FROM vw_club_members WHERE club_id = $1 ORDER BY id ASC LIMIT $2 OFFSET $3;", [clubId, pageSize, offset])
+        const sortField = req.query.sortField
+        const sortDirection = req.query.sortDirection
+        
+        let baseQuery = `SELECT * FROM vw_club_members WHERE club_id = $1`
+        let baseOrder = `ORDER BY id ASC`
+        let limitOffset = `LIMIT $2 OFFSET $3;`
+
+        let finalQuery = ''
+        if (sortDirection && sortField) {
+            finalQuery = `${baseQuery} ORDER BY ${sortField} ${sortDirection} ${limitOffset}`
+            if (sortField === 'grade') {
+                const newOrder = `
+                    CASE
+                    WHEN grade = 'K' THEN 0
+                    WHEN grade = '1' THEN 1
+                    WHEN grade = '2' THEN 2
+                    WHEN grade = '3' THEN 3
+                    WHEN grade = '4' THEN 4
+                    WHEN grade = '5' THEN 5
+                    ELSE 6
+                        END ${sortDirection}`
+                finalQuery = `${baseQuery} ORDER BY ${newOrder} ${limitOffset}`
+            }
+        }
+        else {
+            finalQuery = `${baseQuery} ${baseOrder} ${limitOffset}`
+        }
+        console.log(finalQuery)
+        const { rows } = await db.query(finalQuery, [clubId, pageSize, offset])
         res.status(200).send(rows)
     }
     catch(err) {
@@ -23,7 +50,7 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
 
 clubMemberRouter.get('/:club_id/:club_member_id', async (req: Request, res: Response) => {
     try {
-        const { rows } = await db.query('SELECT * FROM club_members WHERE club_id = $1 AND id = $2;', [req.params.club_id, req.params.club_member_id])
+        const { rows } = await db.query('SELECT * FROM club_members WHERE club_id = $1 AND id = $2 LIMIT 1;', [req.params.club_id, req.params.club_member_id])
         res.status(200).send(rows[0])
     }
     catch(err) {
@@ -33,9 +60,8 @@ clubMemberRouter.get('/:club_id/:club_member_id', async (req: Request, res: Resp
 })
 
 const examplePostClubMember = {
-    "firstName": 3,
+    "firstName": "Hello",
     "lastName": '5',
-    'preferred_name': null,
     'grade': '3',
     'club_id': 1
 }
@@ -55,13 +81,23 @@ clubMemberRouter.post('/', async (req: Request, res: Response) => {
     }
 })
 
+const examplePutClubMember = {
+    "id": 4,
+    "first_name": "Athena",
+    "last_name": "Cline",
+    "amount": 0,
+    "grade": "K",
+    "club_id": 1,
+    "search_vector": "'athena':1 'cline':2 'k':3"
+  }
+
 // only thing we should be updating is the amount
 clubMemberRouter.put('/:club_member_id', async (req: Request, res: Response) => {
     try {
-        const amount = req.query.amount
-        const memberId = req.params.club_member_id
-        const query = `UPDATE club_members SET amount = amount + $1 WHERE id = $2 RETURNING *;`
-        const { rows } = await db.query(query, [amount, memberId])
+        console.log(req.body)
+        const newClubMember = Object.values(req.body)
+        const query = `UPDATE club_members SET amount = $1, club_id = $2 WHERE id = $3 RETURNING *;`
+        const { rows } = await db.query(query, [req.body.amount, req.body.clubId, req.body.id])
         res.status(200).send(rows)
     }
     catch(err) {
