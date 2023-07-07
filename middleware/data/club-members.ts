@@ -20,7 +20,7 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         let limitOffset = `LIMIT $2 OFFSET $3;`
         let searchClause = ``
 
-        if (searchQuery) {
+        if (searchQuery && searchQuery.trim() !== '') {
             let params = searchQuery.split(' ')
             let newParams = params.map((item: string) => {
                 return item+=':*'
