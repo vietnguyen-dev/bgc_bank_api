@@ -13,14 +13,26 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
         const clubId = req.params.club_id
         const sortField = req.query.sortField
         const sortDirection = req.query.sortDirection
+        const searchQuery = req.query.search as string
         
         let baseQuery = `SELECT * FROM vw_club_members WHERE club_id = $1`
         let baseOrder = `ORDER BY id ASC`
         let limitOffset = `LIMIT $2 OFFSET $3;`
+        let searchClause = ``
+
+        if (searchQuery) {
+            let params = searchQuery.split(' ')
+            let newParams = params.map((item: string) => {
+                return item+=':*'
+            })
+            let search = newParams.join(' & ')
+            searchClause = `AND search_vector @@ to_tsquery('english', '${search}')`
+            console.log(searchClause)
+        }
 
         let finalQuery = ''
         if (sortDirection && sortField) {
-            finalQuery = `${baseQuery} ORDER BY ${sortField} ${sortDirection} ${limitOffset}`
+            finalQuery = `${baseQuery} ${searchClause} ORDER BY ${sortField} ${sortDirection} ${limitOffset}`
             if (sortField === 'grade') {
                 const newOrder = `
                     CASE
@@ -32,11 +44,11 @@ clubMemberRouter.get('/:club_id', async (req: Request, res: Response) => {
                     WHEN grade = '5' THEN 5
                     ELSE 6
                         END ${sortDirection}`
-                finalQuery = `${baseQuery} ORDER BY ${newOrder} ${limitOffset}`
+                finalQuery = `${baseQuery} ${searchClause} ORDER BY ${newOrder} ${limitOffset}`
             }
         }
         else {
-            finalQuery = `${baseQuery} ${baseOrder} ${limitOffset}`
+            finalQuery = `${baseQuery} ${searchClause} ${baseOrder} ${limitOffset}`
         }
         console.log(finalQuery)
         const { rows } = await db.query(finalQuery, [clubId, pageSize, offset])
